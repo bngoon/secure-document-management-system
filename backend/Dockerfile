@@ -1,17 +1,23 @@
-# Use the official Node.js image.
+# Use the official Node.js image from Docker Hub
 FROM node:18
 
-# Create and change to the app directory.
+# Install netcat-openbsd for the wait script
+RUN apt-get update && apt-get install -y netcat-openbsd
+
+# Set the working directory in the Docker container
 WORKDIR /usr/src/app
 
-# Copy application dependency manifests to the container image.
+# Copy the package.json and package-lock.json files to the working directory
 COPY package*.json ./
 
-# Install production dependencies.
+# Install the necessary dependencies
 RUN npm install
 
-# Copy local code to the container image.
+# Copy the entire application to the Docker container
 COPY . .
 
-# Run the web service on container startup.
-CMD ["npm", "run", "start"]
+# Expose the port the app runs on
+EXPOSE 5000
+
+# Start the application in development mode
+CMD ["npm", "run", "dev"]
